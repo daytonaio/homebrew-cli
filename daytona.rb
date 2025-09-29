@@ -5,7 +5,7 @@ class Daytona < Formula
   
     if OS.mac? && Hardware::CPU.arm?
       url "https://download.daytona.io/cli/#{version}/daytona-darwin-arm64"
-      sha256 "0292b4dddceab524d524ce666ed689e59fb82a4b28d8c082c69823ea23fe6590"
+      sha256 "3100999b78671ca5e491498e577bfcfc701fbe1feb67d42ece36bc4195114734"
     elsif OS.mac? && Hardware::CPU.intel?    
       url "https://download.daytona.io/cli/#{version}/daytona-darwin-amd64"    
       sha256 "4339bfa3b65ed7b98492b2d22bb97e75988d14914c4cac4dadd63bbb9aa7c890"
