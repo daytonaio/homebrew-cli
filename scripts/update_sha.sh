@@ -7,7 +7,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-version="${1#v}"
+version="${1}"
 ruby_file="daytona.rb"
 
 # Detect operating system
