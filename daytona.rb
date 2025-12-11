@@ -11,7 +11,7 @@ class Daytona < Formula
       sha256 "b913b1508dd35a1b9a7d3a2bbbd5feeea8c78abb409c4261056fcd5ae39cc549"
     elsif OS.linux? && Hardware::CPU.intel?
       url "https://github.com/daytonaio/daytona/releases/download/#{version}/daytona-linux-amd64"
-      sha256 "0e4bfa7eace645ee8a1a9c67be9329e838832b7e1bf1f1654eac622c0cb51ccb"
+      sha256 "3590bcb90a75c32ba8b10d692d26838caedbc267a57db23931694abc9598c873"
     elsif OS.linux? && Hardware::CPU.arm?
       url "https://github.com/daytonaio/daytona/releases/download/#{version}/daytona-linux-arm64"
       sha256 "a1c75753eed039599e144016100b5713d760515613ff7321d029112bcec01927"
