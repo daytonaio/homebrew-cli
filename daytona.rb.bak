@@ -14,7 +14,7 @@ class Daytona < Formula
       sha256 "0e4bfa7eace645ee8a1a9c67be9329e838832b7e1bf1f1654eac622c0cb51ccb"
     elsif OS.linux? && Hardware::CPU.arm?
       url "https://github.com/daytonaio/daytona/releases/download/#{version}/daytona-linux-arm64"
-      sha256 "a1c75753eed039599e144016100b5713d760515613ff7321d029112bcec01927"
+      sha256 "6318eac609b058784d1bc111f8c193f825e8b5b34dee33925c4bdd276c23a9df"
     else
       odie "Unsupported OS/ARCH combination"
     end
