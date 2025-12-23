@@ -1,0 +1,28 @@
+name: Update brew with new versions
+
+on:
+  repository_dispatch:
+    types: [update-version-rc]
+
+jobs:
+  update-brew:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Bash script with version argument
+        run: |
+          # Ensure a version argument is provided
+          if [ -z "${{ github.event.client_payload.version }}" ]; then
+            echo "Please provide a version number as an argument."
+            exit 1
+          fi
+          version="${{ github.event.client_payload.version }}"
+          echo "Received version: $version"
+          bash scripts/update_sha.sh $version
+      - name: Commit ${{ github.event.client_payload.version }}
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          file_pattern: "daytona-rc.rb"
+          branch: master
+          commit_message: Automated file update to - ${{ github.event.client_payload.version }}

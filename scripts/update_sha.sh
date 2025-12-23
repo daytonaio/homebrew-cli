@@ -8,7 +8,13 @@ if [ -z "$1" ]; then
 fi
 
 version="${1}"
-ruby_file="daytona.rb"
+if [[ "$version" == *"rc"* ]]; then
+  echo "Updating RC version"
+  ruby_file="daytona-rc.rb"
+else
+  echo "Updating public version"
+  ruby_file="daytona.rb"
+fi
 
 # Detect operating system
 if [[ "$OSTYPE" == "darwin"* ]]; then
