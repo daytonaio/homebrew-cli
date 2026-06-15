@@ -8,6 +8,10 @@ if [ -z "$1" ]; then
 fi
 
 version="${1}"
+
+# Strip leading 'v' for the formula version field; keep the original for download URLs
+version_bare="${version#v}"
+
 if [[ "$version" == *"rc"* ]]; then
   echo "Updating RC version"
   ruby_file="daytona-rc.rb"
@@ -40,16 +44,19 @@ urls=(
   "https://github.com/daytonaio/daytona/releases/download/${version}/daytona-linux-arm64"
 )
 
-$sed_cmd -i.bak -E "0,/version \".*\"/s/version \".*\"/version \"${version}\"/" "$ruby_file"
+$sed_cmd -i.bak -E "0,/version \".*\"/s/version \".*\"/version \"${version_bare}\"/" "$ruby_file"
 
 # Download and calculate SHA256 for each file and update SHA256 values
 for ((i = 0; i < ${#architectures[@]}; i++)); do
   file_name="daytona-${architectures[$i]}"
   curl -sL -o "$file_name" "${urls[$i]}"
   sha256=$(shasum -a 256 "$file_name" | awk '{print $1}')
-  echo "$sha256"
+  echo "${architectures[$i]}: ${sha256}"
   $sed_cmd -i.bak -E "/url .*$file_name/{n; s/(sha256 \")(.*)(\")/\1${sha256}\3/}" "$ruby_file"
   rm "$file_name"
 done
 
-echo "Updated file with version ${version} and new SHA256 values"
+# Clean up sed backup files
+rm -f "${ruby_file}.bak"
+
+echo "Updated ${ruby_file}: version ${version_bare} (tag ${version})"
