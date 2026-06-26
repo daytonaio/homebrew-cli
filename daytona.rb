@@ -4,16 +4,16 @@ class Daytona < Formula
   version "0.192.0"
 
   if OS.mac? && Hardware::CPU.arm?
-    url "https://github.com/daytonaio/daytona/releases/download/v#{version}/daytona-darwin-arm64"
+    url "https://github.com/daytona/clients/releases/download/v#{version}/daytona-darwin-arm64"
     sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
   elsif OS.mac? && Hardware::CPU.intel?
-    url "https://github.com/daytonaio/daytona/releases/download/v#{version}/daytona-darwin-amd64"
+    url "https://github.com/daytona/clients/releases/download/v#{version}/daytona-darwin-amd64"
     sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
   elsif OS.linux? && Hardware::CPU.intel?
-    url "https://github.com/daytonaio/daytona/releases/download/v#{version}/daytona-linux-amd64"
+    url "https://github.com/daytona/clients/releases/download/v#{version}/daytona-linux-amd64"
     sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
   elsif OS.linux? && Hardware::CPU.arm?
-    url "https://github.com/daytonaio/daytona/releases/download/v#{version}/daytona-linux-arm64"
+    url "https://github.com/daytona/clients/releases/download/v#{version}/daytona-linux-arm64"
     sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
   else
     odie "Unsupported OS/ARCH combination"
