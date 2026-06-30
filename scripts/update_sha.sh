@@ -38,10 +38,10 @@ architectures=(
 )
 
 urls=(
-  "https://github.com/daytonaio/daytona/releases/download/${version}/daytona-darwin-arm64"
-  "https://github.com/daytonaio/daytona/releases/download/${version}/daytona-darwin-amd64"
-  "https://github.com/daytonaio/daytona/releases/download/${version}/daytona-linux-amd64"
-  "https://github.com/daytonaio/daytona/releases/download/${version}/daytona-linux-arm64"
+  "https://github.com/daytona/clients/releases/download/${version}/daytona-darwin-arm64"
+  "https://github.com/daytona/clients/releases/download/${version}/daytona-darwin-amd64"
+  "https://github.com/daytona/clients/releases/download/${version}/daytona-linux-amd64"
+  "https://github.com/daytona/clients/releases/download/${version}/daytona-linux-arm64"
 )
 
 $sed_cmd -i.bak -E "0,/version \".*\"/s/version \".*\"/version \"${version_bare}\"/" "$ruby_file"
@@ -49,7 +49,10 @@ $sed_cmd -i.bak -E "0,/version \".*\"/s/version \".*\"/version \"${version_bare}
 # Download and calculate SHA256 for each file and update SHA256 values
 for ((i = 0; i < ${#architectures[@]}; i++)); do
   file_name="daytona-${architectures[$i]}"
-  curl -sL -o "$file_name" "${urls[$i]}"
+  if ! curl -fSL -o "$file_name" "${urls[$i]}"; then
+    echo "::error::Failed to download ${urls[$i]} (HTTP error). Aborting." >&2
+    exit 1
+  fi
   sha256=$(shasum -a 256 "$file_name" | awk '{print $1}')
   echo "${architectures[$i]}: ${sha256}"
   $sed_cmd -i.bak -E "/url .*$file_name/{n; s/(sha256 \")(.*)(\")/\1${sha256}\3/}" "$ruby_file"
