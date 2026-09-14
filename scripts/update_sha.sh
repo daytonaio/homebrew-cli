@@ -9,16 +9,35 @@ fi
 
 version="${1}"
 
+# Target formula file is chosen by the caller (stable vs prerelease workflow),
+# not guessed from the version string.
+ruby_file="${2:-daytona.rb}"
+
 # Strip leading 'v' for the formula version field; keep the original for download URLs
 version_bare="${version#v}"
 
-if [[ "$version" == *"rc"* ]]; then
-  echo "Updating RC version"
-  ruby_file="daytona-rc.rb"
-else
-  echo "Updating public version"
-  ruby_file="daytona.rb"
-fi
+# Safety net: each formula is one channel. Stable takes only bare versions,
+# the -rc formula only -rc.N, the -alpha formula only -alpha.N — so a channel
+# can never be moved by a dispatch meant for another.
+case "$ruby_file" in
+  daytona.rb)
+    if [[ "$version_bare" =~ [-a-zA-Z] ]]; then
+      echo "::error::Refusing to update stable formula daytona.rb with prerelease version '$version'. Use daytona-rc.rb or daytona-alpha.rb." >&2
+      exit 1
+    fi ;;
+  daytona-rc.rb)
+    if ! [[ "$version_bare" =~ -rc\.[0-9]+$ ]]; then
+      echo "::error::daytona-rc.rb takes only X.Y.Z-rc.N versions, got '$version'." >&2
+      exit 1
+    fi ;;
+  daytona-alpha.rb)
+    if ! [[ "$version_bare" =~ -alpha\.[0-9]+$ ]]; then
+      echo "::error::daytona-alpha.rb takes only X.Y.Z-alpha.N versions, got '$version'." >&2
+      exit 1
+    fi ;;
+esac
+
+echo "Updating ${ruby_file} -> ${version_bare}"
 
 # Detect operating system
 if [[ "$OSTYPE" == "darwin"* ]]; then
