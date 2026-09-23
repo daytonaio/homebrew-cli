@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Ensure a version argument is provided
-if [ -z "$1" ]; then
+if [ -z "${1:-}" ]; then
   echo "Please provide a version number as an argument."
   exit 1
 fi
@@ -31,7 +31,7 @@ case "$ruby_file" in
       exit 1
     fi ;;
   daytona-alpha.rb)
-    if ! [[ "$version_bare" =~ -alpha\.[0-9]+$ ]]; then
+    if ! [[ "$version_bare" =~ ^[0-9]+\.[0-9]+\.[0-9]+-alpha\.[0-9]+$ ]]; then
       echo "::error::daytona-alpha.rb takes only X.Y.Z-alpha.N versions, got '$version'." >&2
       exit 1
     fi ;;
