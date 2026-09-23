@@ -4,9 +4,15 @@ on:
   repository_dispatch:
     types: [update-version-alpha]
 
+concurrency:
+  group: brew-alpha-formula
+  cancel-in-progress: false
+
 jobs:
   update-brew:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

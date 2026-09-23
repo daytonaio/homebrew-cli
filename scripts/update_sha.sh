@@ -79,6 +79,17 @@ for ((i = 0; i < ${#architectures[@]}; i++)); do
   fi
   echo "${architectures[$i]}: ${sha256}"
   $sed_cmd -i.bak -E "/url .*$file_name/{n; s/(sha256 \")(.*)(\")/\1${sha256}\3/}" "$ruby_file"
+
+  # Verify the formula now contains the expected URL and SHA for this asset.
+  if ! grep -q "url.*${file_name}" "$ruby_file"; then
+    echo "::error::Formula ${ruby_file} does not contain a URL for ${file_name} after update. Aborting." >&2
+    exit 1
+  fi
+  if ! grep -q "sha256 \"${sha256}\"" "$ruby_file"; then
+    echo "::error::Formula ${ruby_file} does not contain sha256 ${sha256} for ${file_name} after update. Aborting." >&2
+    exit 1
+  fi
+
   rm "$file_name"
 done
 
