@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Ensure a version argument is provided
 if [ -z "$1" ]; then
@@ -73,6 +73,10 @@ for ((i = 0; i < ${#architectures[@]}; i++)); do
     exit 1
   fi
   sha256=$(shasum -a 256 "$file_name" | awk '{print $1}')
+  if ! [[ "$sha256" =~ ^[0-9a-f]{64}$ ]]; then
+    echo "::error::Invalid SHA256 for $file_name: '$sha256'" >&2
+    exit 1
+  fi
   echo "${architectures[$i]}: ${sha256}"
   $sed_cmd -i.bak -E "/url .*$file_name/{n; s/(sha256 \")(.*)(\")/\1${sha256}\3/}" "$ruby_file"
   rm "$file_name"
