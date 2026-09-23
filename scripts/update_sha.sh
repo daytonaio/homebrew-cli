@@ -21,12 +21,12 @@ version_bare="${version#v}"
 # can never be moved by a dispatch meant for another.
 case "$ruby_file" in
   daytona.rb)
-    if [[ "$version_bare" =~ [-a-zA-Z] ]]; then
-      echo "::error::Refusing to update stable formula daytona.rb with prerelease version '$version'. Use daytona-rc.rb or daytona-alpha.rb." >&2
+    if ! [[ "$version_bare" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+      echo "::error::daytona.rb takes only bare X.Y.Z versions, got '$version'. Prereleases go to daytona-rc.rb or daytona-alpha.rb." >&2
       exit 1
     fi ;;
   daytona-rc.rb)
-    if ! [[ "$version_bare" =~ -rc\.[0-9]+$ ]]; then
+    if ! [[ "$version_bare" =~ ^[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
       echo "::error::daytona-rc.rb takes only X.Y.Z-rc.N versions, got '$version'." >&2
       exit 1
     fi ;;
