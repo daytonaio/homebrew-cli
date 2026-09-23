@@ -57,10 +57,10 @@ architectures=(
 )
 
 urls=(
-  "https://github.com/daytona/clients/releases/download/${version}/daytona-darwin-arm64"
-  "https://github.com/daytona/clients/releases/download/${version}/daytona-darwin-amd64"
-  "https://github.com/daytona/clients/releases/download/${version}/daytona-linux-amd64"
-  "https://github.com/daytona/clients/releases/download/${version}/daytona-linux-arm64"
+  "https://github.com/daytona/clients/releases/download/v${version_bare}/daytona-darwin-arm64"
+  "https://github.com/daytona/clients/releases/download/v${version_bare}/daytona-darwin-amd64"
+  "https://github.com/daytona/clients/releases/download/v${version_bare}/daytona-linux-amd64"
+  "https://github.com/daytona/clients/releases/download/v${version_bare}/daytona-linux-arm64"
 )
 
 $sed_cmd -i.bak -E "0,/version \".*\"/s/version \".*\"/version \"${version_bare}\"/" "$ruby_file"
