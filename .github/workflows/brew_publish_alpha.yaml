@@ -1,4 +1,7 @@
 name: Update brew alpha with new versions
+# The run title carries the version so the dispatching rlp publish job can
+# find and await ITS run by title (never by clock).
+run-name: Update brew alpha to ${{ github.event.client_payload.version }}
 
 on:
   repository_dispatch:
