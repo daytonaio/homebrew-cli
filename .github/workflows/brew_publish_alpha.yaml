@@ -39,5 +39,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: "daytona-alpha.rb"
-          branch: master
           commit_message: Automated file update to - ${{ github.event.client_payload.version }}
