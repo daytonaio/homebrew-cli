@@ -1,0 +1,19 @@
+.github/workflows/brew_publish_alpha.yaml
+  s_0954ca36804ecf::t_8782b33e180f14 2-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "66c7b9534dac79f84920e492556cb7b2a13df954",
+  "prompts": {},
+  "sessions": {
+    "s_0954ca36804ecf": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc70ca8b3ffeqNYYooC6UefCnJ",
+        "model": "claude-fable-5"
+      },
+      "human_author": "MDzaja <mirkodzaja0@gmail.com>"
+    }
+  }
+}
