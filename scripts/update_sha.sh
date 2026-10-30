@@ -16,9 +16,13 @@ ruby_file="${2:-daytona.rb}"
 # Strip leading 'v' for the formula version field; keep the original for download URLs
 version_bare="${version#v}"
 
+# Release asset name prefix: daytona@0 installs the 0.x CLI, which ships as
+# daytona-v0-<os>-<arch> so it can sit next to the daytona binary.
+asset_prefix="daytona"
+
 # Safety net: each formula is one channel. Stable takes only bare versions,
-# the -rc formula only -rc.N, the -alpha formula only -alpha.N — so a channel
-# can never be moved by a dispatch meant for another.
+# the -rc formula only -rc.N, the -alpha formula only -alpha.N, daytona@0 only
+# bare 0.X.Y — so a channel can never be moved by a dispatch meant for another.
 case "$ruby_file" in
   daytona.rb)
     if ! [[ "$version_bare" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -35,6 +39,12 @@ case "$ruby_file" in
       echo "::error::daytona-alpha.rb takes only X.Y.Z-alpha.N versions, got '$version'." >&2
       exit 1
     fi ;;
+  daytona@0.rb)
+    if ! [[ "$version_bare" =~ ^0\.[0-9]+\.[0-9]+$ ]]; then
+      echo "::error::daytona@0.rb takes only bare 0.X.Y versions, got '$version'." >&2
+      exit 1
+    fi
+    asset_prefix="daytona-v0" ;;
 esac
 
 echo "Updating ${ruby_file} -> ${version_bare}"
@@ -57,17 +67,17 @@ architectures=(
 )
 
 urls=(
-  "https://github.com/daytona/clients/releases/download/v${version_bare}/daytona-darwin-arm64"
-  "https://github.com/daytona/clients/releases/download/v${version_bare}/daytona-darwin-amd64"
-  "https://github.com/daytona/clients/releases/download/v${version_bare}/daytona-linux-amd64"
-  "https://github.com/daytona/clients/releases/download/v${version_bare}/daytona-linux-arm64"
+  "https://github.com/daytona/clients/releases/download/v${version_bare}/${asset_prefix}-darwin-arm64"
+  "https://github.com/daytona/clients/releases/download/v${version_bare}/${asset_prefix}-darwin-amd64"
+  "https://github.com/daytona/clients/releases/download/v${version_bare}/${asset_prefix}-linux-amd64"
+  "https://github.com/daytona/clients/releases/download/v${version_bare}/${asset_prefix}-linux-arm64"
 )
 
 $sed_cmd -i.bak -E "0,/version \".*\"/s/version \".*\"/version \"${version_bare}\"/" "$ruby_file"
 
 # Download and calculate SHA256 for each file and update SHA256 values
 for ((i = 0; i < ${#architectures[@]}; i++)); do
-  file_name="daytona-${architectures[$i]}"
+  file_name="${asset_prefix}-${architectures[$i]}"
   if ! curl -fSL -o "$file_name" "${urls[$i]}"; then
     echo "::error::Failed to download ${urls[$i]} (HTTP error). Aborting." >&2
     exit 1
