@@ -20,6 +20,7 @@ Recent Homebrew versions require third-party taps to be explicitly trusted. With
 | `daytona` | stable | everyone |
 | `daytona-rc` | release candidates of the current line | early testers |
 | `daytona-alpha` | **Daytona V2 platform CLI**, `2.0.0-alpha.N` prereleases | V2 alpha users |
+| `daytona@0` | Daytona CLI **0.x line**, stable `0.X.Y` releases | users staying on 0.x |
 
 ```sh
 brew install daytonaio/cli/daytona-alpha   # installs as `daytona`
@@ -30,6 +31,14 @@ than the stable line; the two formulae conflict on the `daytona` binary, so
 install one or the other. Each formula only ever accepts its own version
 suffix (`scripts/update_sha.sh`), so a release dispatch for one channel can
 never move another.
+
+`daytona@0` installs the 0.x CLI as `daytona-v0`, so it does not conflict with
+the `daytona` formula and both can be installed side by side:
+
+```sh
+brew install daytonaio/cli/daytona@0   # installs as `daytona-v0`
+daytona-v0 version
+```
 
 ## Alternative installation (without Homebrew)
 
