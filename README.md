@@ -18,7 +18,7 @@ Recent Homebrew versions require third-party taps to be explicitly trusted. With
 | Formula | Line | Installs as |
 |---|---|---|
 | `daytona` | stable releases: the 0.x CLI until Daytona CLI 2.0.0 is released, the 2.x CLI from then on | `daytona` |
-| `daytona-rc` | 2.x release candidates (`2.Y.Z-rc.N`) | `daytona` |
+| `daytona-rc` | 2.x release candidates (`2.Y.Z-rc.N`), from the first 2.x rc on | `daytona` |
 | `daytona-alpha` | 2.x alpha releases (`2.Y.Z-alpha.N`) | `daytona` |
 | `daytona@0` | the 0.x CLI, stable `0.X.Y` releases | `daytona-v0` |
 
