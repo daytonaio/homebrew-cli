@@ -1,0 +1,29 @@
+.github/workflows/brew_publish.yaml
+  s_4d9fba4bce0dac::t_f9515f5f55e285 2-4,10-13,17-18,23-24,27,31-36
+.github/workflows/brew_publish_rc.yaml
+  s_4d9fba4bce0dac::t_6cb4ab1995db01 1-4,10-13,17-18,23-24,27,31-36
+README.md
+  s_4d9fba4bce0dac::t_f5dc3dcecb8101 18,20-23,26,29-32,34-35,44,47,49-52
+daytona-rc.rb
+  s_4d9fba4bce0dac::t_894ce1549cd94f 2,5-6
+daytona.rb
+  s_4d9fba4bce0dac::t_590da488d03c99 5-6
+scripts/update_sha.sh
+  s_4d9fba4bce0dac::t_49fa9ccfa7f6b7 91-93,97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b308c6de8ece91767d8714c2eeb0e08dd4739804",
+  "prompts": {},
+  "sessions": {
+    "s_4d9fba4bce0dac": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e475d3bddffe29xDGMi4zMCKt4",
+        "model": "unknown"
+      },
+      "human_author": "MDzaja <mirkodzaja0@gmail.com>"
+    }
+  }
+}
