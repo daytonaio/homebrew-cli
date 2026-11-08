@@ -57,7 +57,9 @@ rank() {
   case "${BASH_REMATCH[5]}" in alpha) stage=0 ;; rc) stage=1 ;; esac
   echo "${BASH_REMATCH[1]} ${BASH_REMATCH[2]} ${BASH_REMATCH[3]} ${stage} ${BASH_REMATCH[6]:-0}"
 }
-current="$(sed -n -E '0,/^  version "/s/^  version "(.*)"$/\1/p' "$ruby_file")"
+# The first `  version "…"` line, read with awk: sed's `0,/re/` address is
+# GNU-only, and this runs before the GNU sed selection below.
+current="$(awk -F'"' '/^  version "/ { print $2; exit }' "$ruby_file")"
 if rank "$current" >/dev/null; then
   read -r -a have <<<"$(rank "$current")"
   read -r -a want <<<"$(rank "$version_bare")"
