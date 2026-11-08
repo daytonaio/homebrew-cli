@@ -50,16 +50,22 @@ esac
 # A formula only moves forward: refuse a version below the one it names (a
 # backport release, an older pre-release). The same version is a no-op
 # re-run. Order: X.Y.Z numerically, then alpha < rc < stable, then the
-# pre-release counter numerically.
+# pre-release counter numerically. Numbers have no leading zeros (the
+# comparison below would read them as octal).
 rank() {
-  [[ "$1" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(-(alpha|rc)\.([0-9]+))?$ ]] || return 1
+  [[ "$1" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|rc)\.(0|[1-9][0-9]*))?$ ]] || return 1
   local stage=2
   case "${BASH_REMATCH[5]}" in alpha) stage=0 ;; rc) stage=1 ;; esac
   echo "${BASH_REMATCH[1]} ${BASH_REMATCH[2]} ${BASH_REMATCH[3]} ${stage} ${BASH_REMATCH[6]:-0}"
 }
 # The first `  version "…"` line, read with awk: sed's `0,/re/` address is
 # GNU-only, and this runs before the GNU sed selection below.
-current="$(awk -F'"' '/^  version "/ { print $2; exit }' "$ruby_file")"
+formula_version() { awk -F'"' '/^  version "/ { print $2; exit }' "$ruby_file"; }
+if ! rank "$version_bare" >/dev/null; then
+  echo "::error::'${version}' is not a release version (no leading zeros in its numbers)." >&2
+  exit 1
+fi
+current="$(formula_version)"
 if rank "$current" >/dev/null; then
   read -r -a have <<<"$(rank "$current")"
   read -r -a want <<<"$(rank "$version_bare")"
@@ -101,6 +107,12 @@ urls=(
 )
 
 $sed_cmd -i.bak -E "0,/version \".*\"/s/version \".*\"/version \"${version_bare}\"/" "$ruby_file"
+# The edit uses a GNU sed address; with any other sed it does nothing, so
+# check the result.
+if [ "$(formula_version)" != "$version_bare" ]; then
+  echo "::error::${ruby_file} names '$(formula_version)' after the update, not ${version_bare}; is ${sed_cmd} GNU sed? Aborting." >&2
+  exit 1
+fi
 
 # Download and calculate SHA256 for each file and update SHA256 values
 for ((i = 0; i < ${#architectures[@]}; i++)); do
