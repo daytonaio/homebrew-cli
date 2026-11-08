@@ -1,0 +1,27 @@
+scripts/commit_formula.sh
+  s_4d9fba4bce0dac::t_a8334e3f86efa2 1-45
+.github/workflows/brew_publish.yaml
+  s_4d9fba4bce0dac::t_4ee01a08104ce3 22-26,43-46
+.github/workflows/brew_publish_alpha.yaml
+  s_4d9fba4bce0dac::t_9575b8d3736bc5 22-26,43-46
+.github/workflows/brew_publish_rc.yaml
+  s_4d9fba4bce0dac::t_6afc38e43e0334 22-26,43-46
+.github/workflows/brew_publish_v0.yaml
+  s_4d9fba4bce0dac::t_e75c6a166422da 20-24,41-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "113adf23ed3a69005b39593e2697ea0ca1d9faf9",
+  "prompts": {},
+  "sessions": {
+    "s_4d9fba4bce0dac": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e475d3bddffe29xDGMi4zMCKt4",
+        "model": "unknown"
+      },
+      "human_author": "MDzaja <mirkodzaja0@gmail.com>"
+    }
+  }
+}
