@@ -1,0 +1,21 @@
+.github/workflows/brew_publish_alpha.yaml
+  s_4d9fba4bce0dac::t_9bbb7b8cae1c23 21,38
+.github/workflows/brew_publish_v0.yaml
+  s_4d9fba4bce0dac::t_c589cff95e222e 19,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d34486782a65803554e48f0732d8a1c699dc9445",
+  "prompts": {},
+  "sessions": {
+    "s_4d9fba4bce0dac": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e475d3bddffe29xDGMi4zMCKt4",
+        "model": "unknown"
+      },
+      "human_author": "MDzaja <mirkodzaja0@gmail.com>"
+    }
+  }
+}
