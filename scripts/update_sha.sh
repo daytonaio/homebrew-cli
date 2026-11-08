@@ -47,6 +47,31 @@ case "$ruby_file" in
     asset_prefix="daytona-v0" ;;
 esac
 
+# A formula only moves forward: refuse a version below the one it names (a
+# backport release, an older pre-release). The same version is a no-op
+# re-run. Order: X.Y.Z numerically, then alpha < rc < stable, then the
+# pre-release counter numerically.
+rank() {
+  [[ "$1" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(-(alpha|rc)\.([0-9]+))?$ ]] || return 1
+  local stage=2
+  case "${BASH_REMATCH[5]}" in alpha) stage=0 ;; rc) stage=1 ;; esac
+  echo "${BASH_REMATCH[1]} ${BASH_REMATCH[2]} ${BASH_REMATCH[3]} ${stage} ${BASH_REMATCH[6]:-0}"
+}
+current="$(sed -n -E '0,/^  version "/s/^  version "(.*)"$/\1/p' "$ruby_file")"
+if rank "$current" >/dev/null; then
+  read -r -a have <<<"$(rank "$current")"
+  read -r -a want <<<"$(rank "$version_bare")"
+  for i in 0 1 2 3 4; do
+    if (( want[i] > have[i] )); then break; fi
+    if (( want[i] < have[i] )); then
+      echo "::error::${ruby_file} is at ${current}; refusing to move it back to ${version_bare} (a formula only moves forward)." >&2
+      exit 1
+    fi
+  done
+else
+  echo "::warning::${ruby_file} names '${current}', which is not a release version; updating it to ${version_bare}" >&2
+fi
+
 echo "Updating ${ruby_file} -> ${version_bare}"
 
 # Detect operating system
