@@ -88,10 +88,13 @@ for ((i = 0; i < ${#architectures[@]}; i++)); do
     exit 1
   fi
   echo "${architectures[$i]}: ${sha256}"
+  # Every formula downloads from daytona/clients (older daytona-rc versions
+  # pointed at another repository): rewrite the URL along with its checksum.
+  $sed_cmd -i.bak -E "s#url \"https://github.com/[^/\"]+/[^/\"]+/releases/download/(v\#\{version\}/${file_name})\"#url \"https://github.com/daytona/clients/releases/download/\1\"#" "$ruby_file"
   $sed_cmd -i.bak -E "/url .*$file_name/{n; s/(sha256 \")(.*)(\")/\1${sha256}\3/}" "$ruby_file"
 
   # Verify the formula now contains the expected URL and SHA for this asset.
-  if ! grep -q "url.*${file_name}" "$ruby_file"; then
+  if ! grep -qF "url \"https://github.com/daytona/clients/releases/download/v#{version}/${file_name}\"" "$ruby_file"; then
     echo "::error::Formula ${ruby_file} does not contain a URL for ${file_name} after update. Aborting." >&2
     exit 1
   fi

@@ -2,6 +2,8 @@ class Daytona < Formula
   desc "Daytona CLI"
   homepage "https://daytona.io"
   version "0.231.0"
+  conflicts_with "daytona-alpha", because: "both install the `daytona` binary"
+  conflicts_with "daytona-rc", because: "both install the `daytona` binary"
 
   if OS.mac? && Hardware::CPU.arm?
     url "https://github.com/daytona/clients/releases/download/v#{version}/daytona-darwin-arm64"

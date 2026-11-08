@@ -1,7 +1,9 @@
 class DaytonaRc < Formula
-  desc "Daytona CLI (Release Candidate)"
+  desc "Daytona CLI (release candidate channel; installs as `daytona`)"
   homepage "https://daytona.io"
   version "0.127.0"
+  conflicts_with "daytona", because: "both install the `daytona` binary"
+  conflicts_with "daytona-alpha", because: "both install the `daytona` binary"
 
   if OS.mac? && Hardware::CPU.arm?
     url "https://github.com/daytonaio/daytona/releases/download/v#{version}/daytona-darwin-arm64"

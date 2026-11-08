@@ -15,25 +15,24 @@ Recent Homebrew versions require third-party taps to be explicitly trusted. With
 
 ## Channels
 
-| Formula | Line | Who |
+| Formula | Line | Installs as |
 |---|---|---|
-| `daytona` | stable | everyone |
-| `daytona-rc` | release candidates of the current line | early testers |
-| `daytona-alpha` | **Daytona V2 platform CLI**, `2.0.0-alpha.N` prereleases | V2 alpha users |
-| `daytona@0` | Daytona CLI **0.x line**, stable `0.X.Y` releases | users staying on 0.x |
+| `daytona` | stable releases: the 0.x CLI until Daytona CLI 2.0.0 is released, the 2.x CLI from then on | `daytona` |
+| `daytona-rc` | 2.x release candidates (`2.Y.Z-rc.N`) | `daytona` |
+| `daytona-alpha` | 2.x alpha releases (`2.Y.Z-alpha.N`) | `daytona` |
+| `daytona@0` | the 0.x CLI, stable `0.X.Y` releases | `daytona-v0` |
 
 ```sh
-brew install daytonaio/cli/daytona-alpha   # installs as `daytona`
+brew install daytonaio/cli/daytona-alpha   # the 2.x CLI before 2.0.0
 ```
 
-`daytona-alpha` is the CLI for the V2 platform and talks to a different backend
-than the stable line; the two formulae conflict on the `daytona` binary, so
-install one or the other. Each formula only ever accepts its own version
-suffix (`scripts/update_sha.sh`), so a release dispatch for one channel can
-never move another.
+`daytona`, `daytona-rc` and `daytona-alpha` install the same `daytona`
+binary, so they conflict: install one of them. Each formula only ever accepts
+its own version shape (`scripts/update_sha.sh`), so a release dispatch for
+one channel never moves another.
 
-`daytona@0` installs the 0.x CLI as `daytona-v0`, so it does not conflict with
-the `daytona` formula and both can be installed side by side:
+`daytona@0` installs the 0.x CLI as `daytona-v0`, so it installs side by side
+with any of the above:
 
 ```sh
 brew install daytonaio/cli/daytona@0   # installs as `daytona-v0`
@@ -42,8 +41,12 @@ daytona-v0 version
 
 ## Alternative installation (without Homebrew)
 
-Install the latest Daytona CLI directly from GitHub releases (works on both macOS and Linux, auto-detects architecture):
+Install the Daytona CLI with its installer, which verifies the release checksum (macOS and Linux; see the [CLI README](https://github.com/daytona/clients/tree/main/cli#install) for Windows and channels):
 
 ```sh
-sudo curl -fsSL "https://github.com/daytonaio/daytona/releases/latest/download/daytona-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')" -o /usr/local/bin/daytona && sudo chmod +x /usr/local/bin/daytona
+curl -fsSL https://raw.githubusercontent.com/daytona/clients/main/cli/install.sh | sh
 ```
+
+It installs the 2.x CLI (before 2.0.0, its newest pre-release). The 0.x CLI
+ships `install-v0.sh` with each 0.x release of
+[daytona/clients](https://github.com/daytona/clients/releases).
