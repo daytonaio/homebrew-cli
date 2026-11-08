@@ -29,7 +29,9 @@ brew install daytonaio/cli/daytona-alpha   # the 2.x CLI before 2.0.0
 `daytona`, `daytona-rc` and `daytona-alpha` install the same `daytona`
 binary, so they conflict: install one of them. Each formula only ever accepts
 its own version shape (`scripts/update_sha.sh`), so a release dispatch for
-one channel never moves another.
+one channel never moves another. A formula also only moves forward: a
+dispatch of a version below the one the formula names fails the tap run and
+leaves the formula as it is.
 
 `daytona@0` installs the 0.x CLI as `daytona-v0`, so it installs side by side
 with any of the above:
