@@ -1,28 +1,46 @@
 name: Update brew with new versions
+# The run title carries the version so the dispatching publish job can find
+# and await ITS run by title (never by clock).
+run-name: Update brew daytona to ${{ github.event.client_payload.version }}
 
 on:
   repository_dispatch:
     types: [update-version]
 
+concurrency:
+  group: brew-stable-formula
+  cancel-in-progress: false
+
 jobs:
   update-brew:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        # The tip of master, not the commit the dispatch event was created
+        # on: a run that waited behind another one must build on its update.
+        with:
+          ref: master
+          fetch-depth: 0
       - name: Run Bash script with version argument
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
         run: |
           # Ensure a version argument is provided
-          if [ -z "${{ github.event.client_payload.version }}" ]; then
+          if [ -z "$VERSION" ]; then
             echo "Please provide a version number as an argument."
             exit 1
           fi
-          version="${{ github.event.client_payload.version }}"
-          echo "Received version: $version"
-          bash scripts/update_sha.sh $version
+          if ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid stable version '$VERSION'. Expected vX.Y.Z." >&2
+            exit 1
+          fi
+          echo "Received version: $VERSION"
+          bash scripts/update_sha.sh "$VERSION" daytona.rb
       - name: Commit ${{ github.event.client_payload.version }}
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          file_pattern: "daytona.rb"
-          branch: master
-          commit_message: Automated file update to - ${{ github.event.client_payload.version }}
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        # Rebases and retries when another formula's update landed first.
+        run: bash scripts/commit_formula.sh "daytona.rb" "Automated file update to - $VERSION"

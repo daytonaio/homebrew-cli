@@ -18,7 +18,12 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        # The tip of master, not the commit the dispatch event was created
+        # on: a run that waited behind another one must build on its update.
+        with:
+          ref: master
+          fetch-depth: 0
       - name: Run Bash script with version argument
         env:
           VERSION: ${{ github.event.client_payload.version }}
@@ -35,7 +40,7 @@ jobs:
           echo "Received version: $VERSION"
           bash scripts/update_sha.sh "$VERSION" daytona-alpha.rb
       - name: Commit ${{ github.event.client_payload.version }}
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          file_pattern: "daytona-alpha.rb"
-          commit_message: Automated file update to - ${{ github.event.client_payload.version }}
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        # Rebases and retries when another formula's update landed first.
+        run: bash scripts/commit_formula.sh "daytona-alpha.rb" "Automated file update to - $VERSION"

@@ -47,6 +47,39 @@ case "$ruby_file" in
     asset_prefix="daytona-v0" ;;
 esac
 
+# A formula only moves forward: refuse a version below the one it names (a
+# backport release, an older pre-release). The same version is a no-op
+# re-run. Order: X.Y.Z numerically, then alpha < rc < stable, then the
+# pre-release counter numerically. Numbers have no leading zeros (the
+# comparison below would read them as octal).
+rank() {
+  [[ "$1" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|rc)\.(0|[1-9][0-9]*))?$ ]] || return 1
+  local stage=2
+  case "${BASH_REMATCH[5]}" in alpha) stage=0 ;; rc) stage=1 ;; esac
+  echo "${BASH_REMATCH[1]} ${BASH_REMATCH[2]} ${BASH_REMATCH[3]} ${stage} ${BASH_REMATCH[6]:-0}"
+}
+# The first `  version "…"` line, read with awk: sed's `0,/re/` address is
+# GNU-only, and this runs before the GNU sed selection below.
+formula_version() { awk -F'"' '/^  version "/ { print $2; exit }' "$ruby_file"; }
+if ! rank "$version_bare" >/dev/null; then
+  echo "::error::'${version}' is not a release version (no leading zeros in its numbers)." >&2
+  exit 1
+fi
+current="$(formula_version)"
+if rank "$current" >/dev/null; then
+  read -r -a have <<<"$(rank "$current")"
+  read -r -a want <<<"$(rank "$version_bare")"
+  for i in 0 1 2 3 4; do
+    if (( want[i] > have[i] )); then break; fi
+    if (( want[i] < have[i] )); then
+      echo "::error::${ruby_file} is at ${current}; refusing to move it back to ${version_bare} (a formula only moves forward)." >&2
+      exit 1
+    fi
+  done
+else
+  echo "::warning::${ruby_file} names '${current}', which is not a release version; updating it to ${version_bare}" >&2
+fi
+
 echo "Updating ${ruby_file} -> ${version_bare}"
 
 # Detect operating system
@@ -74,6 +107,12 @@ urls=(
 )
 
 $sed_cmd -i.bak -E "0,/version \".*\"/s/version \".*\"/version \"${version_bare}\"/" "$ruby_file"
+# The edit uses a GNU sed address; with any other sed it does nothing, so
+# check the result.
+if [ "$(formula_version)" != "$version_bare" ]; then
+  echo "::error::${ruby_file} names '$(formula_version)' after the update, not ${version_bare}; is ${sed_cmd} GNU sed? Aborting." >&2
+  exit 1
+fi
 
 # Download and calculate SHA256 for each file and update SHA256 values
 for ((i = 0; i < ${#architectures[@]}; i++)); do
@@ -88,10 +127,13 @@ for ((i = 0; i < ${#architectures[@]}; i++)); do
     exit 1
   fi
   echo "${architectures[$i]}: ${sha256}"
+  # Every formula downloads from daytona/clients (older daytona-rc versions
+  # pointed at another repository): rewrite the URL along with its checksum.
+  $sed_cmd -i.bak -E "s#url \"https://github.com/[^/\"]+/[^/\"]+/releases/download/(v\#\{version\}/${file_name})\"#url \"https://github.com/daytona/clients/releases/download/\1\"#" "$ruby_file"
   $sed_cmd -i.bak -E "/url .*$file_name/{n; s/(sha256 \")(.*)(\")/\1${sha256}\3/}" "$ruby_file"
 
   # Verify the formula now contains the expected URL and SHA for this asset.
-  if ! grep -q "url.*${file_name}" "$ruby_file"; then
+  if ! grep -qF "url \"https://github.com/daytona/clients/releases/download/v#{version}/${file_name}\"" "$ruby_file"; then
     echo "::error::Formula ${ruby_file} does not contain a URL for ${file_name} after update. Aborting." >&2
     exit 1
   fi
