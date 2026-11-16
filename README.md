@@ -20,7 +20,7 @@ Recent Homebrew versions require third-party taps to be explicitly trusted. With
 | `daytona` | stable releases: the 0.x CLI until Daytona CLI 2.0.0 is released, the 2.x CLI from then on | `daytona` |
 | `daytona-rc` | 2.x release candidates (`2.Y.Z-rc.N`), from the first 2.x rc on | `daytona` |
 | `daytona-alpha` | 2.x alpha releases (`2.Y.Z-alpha.N`) | `daytona` |
-| `daytona-v0` | the 0.x CLI, stable `0.X.Y` releases | `daytona-v0` |
+| `daytona-v0@0` | the 0.x CLI, stable `0.X.Y` releases | `daytona-v0` |
 
 ```sh
 brew install daytonaio/cli/daytona-alpha   # the 2.x CLI before 2.0.0
@@ -33,20 +33,22 @@ one channel never moves another. A formula also only moves forward: a
 dispatch of a version below the one the formula names fails the tap run and
 leaves the formula as it is.
 
-`daytona-v0` installs the 0.x CLI as `daytona-v0`, so it installs side by side
-with any of the above:
+`daytona-v0@0` installs the 0.x CLI as `daytona-v0`, so it installs side by
+side with any of the above:
 
 ```sh
-brew install daytonaio/cli/daytona-v0
+brew install daytonaio/cli/daytona-v0@0
 daytona-v0 version
 ```
 
-The formula is deliberately not named `daytona@0`: Homebrew loads the
-unversioned sibling (`daytona`) of any `@`-versioned formula during install,
-and since tap trust (Homebrew 6.0) a fully qualified install trusts only the
-named formula, so `daytona@0` failed with "Refusing to load formula
-daytonaio/cli/daytona from untrusted tap". `formula_renames.json` maps the old
-name to `daytona-v0` for existing installs.
+The formula is deliberately not named `daytona@0`. For an `@`-versioned
+formula Homebrew also loads the formula named before the `@`, looked up by
+short name in every tap. As `daytona@0` that was `daytona`, which a fully
+qualified install does not trust (tap trust, Homebrew 6.0+), and which the
+legacy `daytona/tap` also provides ("Formulae found in multiple taps").
+`daytona-v0@0` has no `daytona-v0` formula to load, so neither happens.
+`formula_renames.json` maps `daytona@0` to `daytona-v0@0`, which moves
+existing installs over (`brew migrate daytona@0`).
 
 ## Alternative installation (without Homebrew)
 

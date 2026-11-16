@@ -16,12 +16,12 @@ ruby_file="${2:-daytona.rb}"
 # Strip leading 'v' for the formula version field; keep the original for download URLs
 version_bare="${version#v}"
 
-# Release asset name prefix: daytona-v0 installs the 0.x CLI, which ships as
+# Release asset name prefix: daytona-v0@0 installs the 0.x CLI, which ships as
 # daytona-v0-<os>-<arch> so it can sit next to the daytona binary.
 asset_prefix="daytona"
 
 # Safety net: each formula is one channel. Stable takes only bare versions,
-# the -rc formula only -rc.N, the -alpha formula only -alpha.N, daytona-v0 only
+# the -rc formula only -rc.N, the -alpha formula only -alpha.N, daytona-v0@0 only
 # bare 0.X.Y — so a channel can never be moved by a dispatch meant for another.
 case "$ruby_file" in
   daytona.rb)
@@ -39,9 +39,9 @@ case "$ruby_file" in
       echo "::error::daytona-alpha.rb takes only X.Y.Z-alpha.N versions, got '$version'." >&2
       exit 1
     fi ;;
-  daytona-v0.rb)
+  daytona-v0@0.rb)
     if ! [[ "$version_bare" =~ ^0\.[0-9]+\.[0-9]+$ ]]; then
-      echo "::error::daytona-v0.rb takes only bare 0.X.Y versions, got '$version'." >&2
+      echo "::error::daytona-v0@0.rb takes only bare 0.X.Y versions, got '$version'." >&2
       exit 1
     fi
     asset_prefix="daytona-v0" ;;
