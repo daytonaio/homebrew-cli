@@ -1,0 +1,14 @@
+daytona.rb
+  h_e7759ddd73fa65 4,10,13,16,19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "793fc21565bddf942898674c6d4fd7b9088d6bd6",
+  "prompts": {},
+  "humans": {
+    "h_e7759ddd73fa65": {
+      "author": "MDzaja <mirkodzaja0@gmail.com>"
+    }
+  }
+}
