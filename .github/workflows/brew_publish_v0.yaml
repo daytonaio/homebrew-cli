@@ -1,5 +1,5 @@
-name: Update brew daytona@0 with new versions
-run-name: Update brew daytona@0 to ${{ github.event.client_payload.version }}
+name: Update brew daytona-v0 with new versions
+run-name: Update brew daytona-v0 to ${{ github.event.client_payload.version }}
 
 on:
   repository_dispatch:
@@ -36,9 +36,9 @@ jobs:
             exit 1
           fi
           echo "Received version: $VERSION"
-          bash scripts/update_sha.sh "$VERSION" daytona@0.rb
+          bash scripts/update_sha.sh "$VERSION" daytona-v0.rb
       - name: Commit ${{ github.event.client_payload.version }}
         env:
           VERSION: ${{ github.event.client_payload.version }}
         # Rebases and retries when another formula's update landed first.
-        run: bash scripts/commit_formula.sh "daytona@0.rb" "Automated file update to - $VERSION"
+        run: bash scripts/commit_formula.sh "daytona-v0.rb" "Automated file update to - $VERSION"

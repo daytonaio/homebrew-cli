@@ -1,4 +1,4 @@
-class DaytonaAT0 < Formula
+class DaytonaV0 < Formula
   desc "Daytona CLI 0.x line (installs as `daytona-v0`, alongside the `daytona` formula)"
   homepage "https://daytona.io"
   version "0.231.1"
