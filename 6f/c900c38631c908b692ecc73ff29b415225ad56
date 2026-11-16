@@ -1,0 +1,22 @@
+.github/workflows/brew_publish_v0.yaml
+  h_e7759ddd73fa65 1-2,39,44
+README.md
+  h_e7759ddd73fa65 23,36,40,44-50
+daytona-v0.rb
+  h_e7759ddd73fa65 1
+formula_renames.json
+  h_e7759ddd73fa65 1-3
+scripts/update_sha.sh
+  h_e7759ddd73fa65 19,24,42,44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6fc900c38631c908b692ecc73ff29b415225ad56",
+  "prompts": {},
+  "humans": {
+    "h_e7759ddd73fa65": {
+      "author": "MDzaja <mirkodzaja0@gmail.com>"
+    }
+  }
+}
